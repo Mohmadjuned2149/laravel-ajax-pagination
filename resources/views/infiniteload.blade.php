@@ -30,36 +30,30 @@
             No data found
         @endif
     </div>
+
     <script type="text/javascript">
         $(document).ready(function() {
-
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            pagination()
-            $("#records").change(function(e) {
-                e.preventDefault();
-                pagination();
-                getData();
+            var page = 1;
+            $(window).scroll(function() {
+                if ($(window).scrollTop() + $(window).height() + 1 > $(document).height()) {
+                    page++;
+                    getData(page);
+                }
             });
-            $(document).on('click', "a.page-link", function(e) {
-                e.preventDefault();
-                var page_no = $(this).attr("id");
-                getData(page_no);
-            })
 
             function getData(page) {
-                var records_per_page = $("#records").val();
                 var formData = {
-                    page_no: page,
-                    records_per_page: records_per_page,
+                    page: page,
                     "_token": "{{ csrf_token() }}",
                 }
                 $.ajax({
                     type: 'POST',
-                    url: "{{ route('ajax.data') }}",
+                    url: "{{ route('infinite.load') }}",
                     data: formData,
                     dataType: 'json',
                     success: function(data) {
@@ -78,29 +72,6 @@
                     error: function(errors) {}
                 });
             }
-
-            function pagination(){
-                $.ajax({
-                type: 'GET',
-                url: "{{ route('total.records') }}",
-                success: function(data) {
-                    console.log(data.total)
-                    var records_per_page = $("#records").val();
-                    var pages = Math.ceil(data.total / records_per_page)
-                    var html = `<nav aria-label='Page navigation example'><ul class='pagination'>`
-                    for (i = 1; i <= pages; i++) {
-                        html +=
-                            `<li class='page-item' ><a class='page-link' href='#' id='${i}'>${i}</a></li>`
-                    }
-                    html += `</ul></nav>`
-                    $('#pagination').html(html);
-                },
-                error: function(errors) {
-                    console.log(errors)
-                }
-            });
-            }
-
         });
     </script>
 </body>

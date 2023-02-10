@@ -35,12 +35,7 @@ class EmployeeController extends Controller
         $employee = employees::orderBy('id', 'ASC')->take(10)->get();
         return view('loadmore', compact('employee'));
     }
-    public function infiniteLoad()
-    {
-        $employee = employees::orderBy('id', 'ASC')->take(10)->get();
-        return view('infiniteload', compact('employee'));
-    }
-
+    
     public function getLoadMore(Request $request)
     {
         $employee = employees::orderBy('id', 'ASC')->take($request->last_record)->get();
@@ -49,5 +44,19 @@ class EmployeeController extends Controller
         ]);
     }
 
+    public function infiniteLoad()
+    {
+        $employee = employees::orderBy('id', 'ASC')->take(20)->get();
+        return view('infiniteload', compact('employee'));
+    }
+
+    public function getInfiniteLoadData(Request $request)
+    {
+        $limit = $request->page * 10;
+        $employee = employees::orderBy('id', 'ASC')->take($limit)->get();
+        return response()->json([
+            'data' => $employee
+        ]);
+    }
 
 }

@@ -30,12 +30,12 @@
                         <option value="25">25</option>
                         <option value="50">50</option>
                         <option value="100">100</option>
-                      </select>
-                      <br>
-                  </div>
-                  <p></P>
+                    </select>
+                    <br>
+                </div>
+                <p></P>
                 @include('load_posts_data')
-                <div class="sync-pagination pagination-sm" id="pagination" ></div>
+                <div class="sync-pagination pagination-sm" id="pagination"></div>
             </section>
         @else
             No data found
@@ -90,28 +90,30 @@
                 });
             }
 
-            function pagination(){
+            function pagination() {
                 $.ajax({
-                type: 'GET',
-                url: "{{ route('total.records') }}",
-                success: function(data) {
-                    console.log(data.total)
-                    var records_per_page = $("#records").val();
-                    var pages = Math.ceil(data.total / records_per_page)
-                    var html = `<nav aria-label='Page navigation example'><ul class='pagination'>`
-                    for (i = 1; i <= pages; i++) {
-                        html +=
-                            `<li class='page-item' ><a class='page-link' href='#' id='${i}'>${i}</a></li>`
+                    type: 'GET',
+                    url: "{{ route('total.records') }}",
+                    success: function(data) {
+                        console.log(data.total)
+                        var records_per_page = $("#records").val();
+                        var pages = Math.ceil(data.total / records_per_page)
+                        var html = `<nav aria-label='Page navigation example'><ul class='pagination'>`
+                        for (i = 1; i <= pages; i++) {
+                            html +=
+                                `<li class='page-item' ><a class='page-link' href='#' id='${i}'>${i}</a></li>`
+                        }
+                        html += `</ul></nav>`
+                        $('#pagination').html(html);
+                    },
+                    error: function(errors) {
+                        console.log(errors)
                     }
-                    html += `</ul></nav>`
-                    $('#pagination').html(html);
-                },
-                error: function(errors) {
-                    console.log(errors)
-                }
-            });
+                });
             }
-
+           
+               
+        
         });
     </script>
 </body>

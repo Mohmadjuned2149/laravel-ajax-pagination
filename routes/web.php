@@ -20,3 +20,4 @@ Route::get('/total_records', [EmployeeController::class, 'getTotalData'])->name(
 Route::get('/load-more', [EmployeeController::class, 'loadMore'])->name('load.more');
 Route::post('/load-more', [EmployeeController::class, 'getLoadMore'])->name('load.more');
 Route::get('/infinite-load', [EmployeeController::class, 'infiniteLoad'])->name('infinite.load');
+Route::post('/infinite-load', [EmployeeController::class, 'getInfiniteLoadData'])->name('infinite.load');
