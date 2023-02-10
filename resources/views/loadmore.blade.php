@@ -24,26 +24,17 @@
         </div>
         @if (count($employee) > 0)
             <section class="posts">
-                <div class="btn-group dropleft">
-                    <select class="form-control" id="records">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                      </select>
-                      <br>
-                  </div>
-                  <p></P>
                 @include('load_posts_data')
-                <div class="sync-pagination pagination-sm" id="pagination" ></div>
+                <button class="btn btn-dark float-right" id="load_more">Load More</button>
             </section>
         @else
             No data found
         @endif
     </div>
+
+
     <script type="text/javascript">
         $(document).ready(function() {
-
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -90,27 +81,59 @@
                 });
             }
 
-            function pagination(){
+            function pagination() {
                 $.ajax({
-                type: 'GET',
-                url: "{{ route('total.records') }}",
-                success: function(data) {
-                    console.log(data.total)
-                    var records_per_page = $("#records").val();
-                    var pages = Math.ceil(data.total / records_per_page)
-                    var html = `<nav aria-label='Page navigation example'><ul class='pagination'>`
-                    for (i = 1; i <= pages; i++) {
-                        html +=
-                            `<li class='page-item' ><a class='page-link' href='#' id='${i}'>${i}</a></li>`
+                    type: 'GET',
+                    url: "{{ route('total.records') }}",
+                    success: function(data) {
+                        console.log(data.total)
+                        var records_per_page = $("#records").val();
+                        var pages = Math.ceil(data.total / records_per_page)
+                        var html = `<nav aria-label='Page navigation example'><ul class='pagination'>`
+                        for (i = 1; i <= pages; i++) {
+                            html +=
+                                `<li class='page-item' ><a class='page-link' href='#' id='${i}'>${i}</a></li>`
+                        }
+                        html += `</ul></nav>`
+                        $('#pagination').html(html);
+                    },
+                    error: function(errors) {
+                        console.log(errors)
                     }
-                    html += `</ul></nav>`
-                    $('#pagination').html(html);
-                },
-                error: function(errors) {
-                    console.log(errors)
-                }
-            });
+                });
             }
+            var last_record = 10;
+            $("#load_more").click(function(e) {
+                e.preventDefault();
+                 last_record += 10;
+
+                 var formData = {
+                    last_record:last_record,
+                    "_token": "{{ csrf_token() }}"
+                 }
+                 console.log(formData)
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('load.more') }}",
+                    data: formData,
+                    dataType: 'json',
+                    success: function(data) {
+                        var html = ""
+                        $.each(data.data, function(index, value) {
+                            html += `<tr>
+                        <th scope='row'>${value.id}</th>
+                        <td>${value.firstname}</td>
+                        <td>${value.lastname}</td>
+                        <td>${value.email}</td>
+                        <td>${value.dob}</td>
+                      </tr>`
+                        });
+                        $("#table").html(html);
+                    },
+                    error: function(errors) {}
+                });
+
+            });
 
         });
     </script>
