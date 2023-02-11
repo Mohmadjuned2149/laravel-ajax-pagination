@@ -3,11 +3,11 @@
     <table class="table table-bordered">
         <thead class="thead-light">
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">First name</th>
-                <th scope="col">Last name</th>
-                <th scope="col">Email</th>
-                <th scope="col">DOB</th>
+                <th scope="col" class="th">#</th>
+                <th scope="col" class="th">First name</th>
+                <th scope="col" class="th">Last name</th>
+                <th scope="col" class="th">Email</th>
+                <th scope="col" class="th">DOB</th>
             </tr>
         </thead>
         <tbody id='table'>

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\employees;
+use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
 {
@@ -18,7 +18,7 @@ class EmployeeController extends Controller
         $ofsset = ($request->page_no - 1) * $request->records_per_page;
         $employee = employees::orderBy('id', 'ASC')->skip($ofsset)->take($request->records_per_page)->get();
         return response()->json([
-            'data' => $employee
+            'data' => $employee,
         ]);
     }
 
@@ -27,7 +27,7 @@ class EmployeeController extends Controller
         $employee = employees::all();
         $total_records = count($employee);
         return response()->json([
-            'total' => $total_records
+            'total' => $total_records,
         ]);
     }
     public function loadMore()
@@ -55,7 +55,7 @@ class EmployeeController extends Controller
             $employee = employees::orderBy('id', 'ASC')->take($last_record)->get();
         }
         return response()->json([
-            'data' => $employee
+            'data' => $employee,
         ]);
     }
 
@@ -85,9 +85,8 @@ class EmployeeController extends Controller
             $employee = employees::orderBy('id', 'ASC')->take($limit)->get();
         }
         return response()->json([
-            'data' => $employee
+            'data' => $employee,
         ]);
     }
-
 
 }
