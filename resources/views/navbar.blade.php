@@ -7,18 +7,18 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item " id='home'>
+            <li class="nav-item " >
                 <a class="nav-link" href="/" >Home</a>
             </li>
-            <li class="nav-item" id='load_more'>
+            <li class="nav-item" >
                 <a class="nav-link" href="{{ route('load.more') }}" >Load More</a>
             </li>
-            <li class="nav-item" id='Infinite'>
+            <li class="nav-item" >
                 <a class="nav-link" href="{{ route('infinite.load') }}" >Infinite Loading</a>
             </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
     </div>

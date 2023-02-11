@@ -35,10 +35,25 @@ class EmployeeController extends Controller
         $employee = employees::orderBy('id', 'ASC')->take(10)->get();
         return view('loadmore', compact('employee'));
     }
-    
+
     public function getLoadMore(Request $request)
     {
-        $employee = employees::orderBy('id', 'ASC')->take($request->last_record)->get();
+        if ($request->search != "") {
+            $employee = employees::orderBy('id', 'ASC')
+                ->where('id', 'like', '%' . $request->search . '%')
+                ->orWhere('firstname', 'like', '%' . $request->search . '%')
+                ->orWhere('lastname', 'like', '%' . $request->search . '%')
+                ->orWhere('email', 'like', '%' . $request->search . '%')
+                ->get();
+        } else {
+            if ($request->last_record) {
+                $last_record = $request->last_record;
+            } else {
+                $last_record = 10;
+            }
+
+            $employee = employees::orderBy('id', 'ASC')->take($last_record)->get();
+        }
         return response()->json([
             'data' => $employee
         ]);
@@ -52,11 +67,27 @@ class EmployeeController extends Controller
 
     public function getInfiniteLoadData(Request $request)
     {
-        $limit = $request->page * 10;
-        $employee = employees::orderBy('id', 'ASC')->take($limit)->get();
+
+        if ($request->search != "") {
+            $employee = employees::orderBy('id', 'ASC')
+                ->where('id', 'like', '%' . $request->search . '%')
+                ->orWhere('firstname', 'like', '%' . $request->search . '%')
+                ->orWhere('lastname', 'like', '%' . $request->search . '%')
+                ->orWhere('email', 'like', '%' . $request->search . '%')
+                ->get();
+        } else {
+            if ($request->page) {
+                $limit = $request->page * 10;
+            } else {
+                $limit = 20;
+            }
+
+            $employee = employees::orderBy('id', 'ASC')->take($limit)->get();
+        }
         return response()->json([
             'data' => $employee
         ]);
     }
+
 
 }

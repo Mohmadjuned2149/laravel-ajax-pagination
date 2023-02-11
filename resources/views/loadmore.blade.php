@@ -40,10 +40,8 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            pagination()
             $("#records").change(function(e) {
                 e.preventDefault();
-                pagination();
                 getData();
             });
             $(document).on('click', "a.page-link", function(e) {
@@ -81,27 +79,7 @@
                 });
             }
 
-            function pagination() {
-                $.ajax({
-                    type: 'GET',
-                    url: "{{ route('total.records') }}",
-                    success: function(data) {
-                        console.log(data.total)
-                        var records_per_page = $("#records").val();
-                        var pages = Math.ceil(data.total / records_per_page)
-                        var html = `<nav aria-label='Page navigation example'><ul class='pagination'>`
-                        for (i = 1; i <= pages; i++) {
-                            html +=
-                                `<li class='page-item' ><a class='page-link' href='#' id='${i}'>${i}</a></li>`
-                        }
-                        html += `</ul></nav>`
-                        $('#pagination').html(html);
-                    },
-                    error: function(errors) {
-                        console.log(errors)
-                    }
-                });
-            }
+            
             var last_record = 10;
             $("#load_more").click(function(e) {
                 e.preventDefault();
@@ -131,6 +109,42 @@
                         $("#table").html(html);
                     },
                     error: function(errors) {}
+                });
+
+            });
+
+            $("#search").on( "keyup",function(e) {
+                e.preventDefault();
+                //AJAX Setup
+             
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                var value = $(this).val();
+                console.log(value)
+                var formData = {
+                    search: value,
+                    "_token": "{{ csrf_token() }}",
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('load.more') }}",
+                    data: formData,
+                    success: function(data) {
+                        var html = ""
+                        $.each(data.data, function(index, value) {
+                            html += `<tr>
+               <th scope='row'>${value.id}</th>
+               <td>${value.firstname}</td>
+               <td>${value.lastname}</td>
+               <td>${value.email}</td>
+               <td>${value.dob}</td>
+               </tr>`
+                        });
+                        $("#table").html(html);
+                    }
                 });
 
             });

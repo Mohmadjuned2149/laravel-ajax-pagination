@@ -43,7 +43,6 @@
     </div>
     <script type="text/javascript">
         $(document).ready(function() {
-
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -60,7 +59,6 @@
                 var page_no = $(this).attr("id");
                 getData(page_no);
             })
-
             function getData(page) {
                 var records_per_page = $("#records").val();
                 var formData = {
@@ -89,13 +87,11 @@
                     error: function(errors) {}
                 });
             }
-
             function pagination() {
                 $.ajax({
                     type: 'GET',
                     url: "{{ route('total.records') }}",
                     success: function(data) {
-                        console.log(data.total)
                         var records_per_page = $("#records").val();
                         var pages = Math.ceil(data.total / records_per_page)
                         var html = `<nav aria-label='Page navigation example'><ul class='pagination'>`
@@ -111,11 +107,44 @@
                     }
                 });
             }
-           
-               
-        
+
+            $("#search").on( "keyup",function(e) {
+                e.preventDefault();
+                //AJAX Setup
+             
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                var value = $(this).val();
+                var formData = {
+                    search: value,
+                    "_token": "{{ csrf_token() }}",
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('infinite.load') }}",
+                    data: formData,
+                    success: function(data) {
+                        var html = ""
+                        $.each(data.data, function(index, value) {
+                            html += `<tr>
+               <th scope='row'>${value.id}</th>
+               <td>${value.firstname}</td>
+               <td>${value.lastname}</td>
+               <td>${value.email}</td>
+               <td>${value.dob}</td>
+               </tr>`
+                        });
+                        $("#table").html(html);
+                    }
+                });
+
+            });
         });
     </script>
+<script src="{{asset('js/search.js')}}" type="text/javascript"></script>
 </body>
 
 </html>
